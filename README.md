@@ -9,7 +9,7 @@ This is a simple echo server and client over **virtio-vsock** which is meant to 
 ![HostToGuest](https://raw.githubusercontent.com/MatiasVara/echo-vsock/main/GuestToHost.png)
 
 ## Guest to Guest communication
-![HostToGuest](https://raw.githubusercontent.com/MatiasVara/echo-vsock/main/GuestToHost.png)
+![GuestToGuest](https://raw.githubusercontent.com/MatiasVara/echo-vsock/main/GuestToGuest.png)
 
 # Comments
 matiasevara@gmail.com
