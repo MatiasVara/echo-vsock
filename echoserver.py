@@ -9,8 +9,17 @@ import socket
 import threading
 import time
 import sys
+import os
 
 s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+
+# remove link if it exist
+try:
+    os.unlink(sys.argv[1])
+except OSError:
+    if os.path.exists(sys.argv[1]):
+        raise
+
 s.bind(sys.argv[1])
 s.listen();
 
