@@ -1,10 +1,10 @@
-# Usage: python3.7 ./echoclient.py [cid] [samples] [name]
+# Usage: python3.7 ./echoclient.py [cid] [port] [samples] [name]
 #
-# latency is calculated as the half of the time elapsed between the sending and the reception
-# SOCKSTREAM is not the best for latency but SOCKDGRAM is not supported yet
-# 
+# Latency is calculated as the time elapsed between the sending and the reception
+# SOCKSTREAM is not good for latency but SOCKDGRAM is not supported yet
+#
 # CID '2' is always the host
-# e.g., ./echoclient.py 4 10000 guesttohost
+# e.g., ./echoclient.py 2 1234 10000 guesttohost
 #
 import socket
 import threading
@@ -15,18 +15,18 @@ import statistics
 max_latency = 0
 values = []
 
-for i in range(int(sys.argv[2])):
+for i in range(int(sys.argv[3])):
     s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
-    s.connect((int(sys.argv[1]), 1234))
+    s.connect((int(sys.argv[1]), int(sys.argv[2])))
     a = datetime.datetime.now()
     s.send(b'abcdefghijklmn1234');
     data = s.recv(1024).decode();
     b = datetime.datetime.now()
     c = b - a;
-    max_latency = max(max_latency, c.microseconds / 2)
-    values.append(c.microseconds / 2)    
+    max_latency = max(max_latency, c.microseconds)
+    values.append(c.microseconds)
     s.close();
-f = open (sys.argv[3]+'.dat','w')
+f = open (sys.argv[4]+'.dat','w')
 med = statistics.median(values);
 for x in values:
     f.write(str((x - med) / med) + '\n');
