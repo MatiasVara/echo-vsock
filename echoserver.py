@@ -1,11 +1,17 @@
-# Usage: python3.7 ./echoserver.py
-# This is just an echo server
+# Usage: python3.7 ./echoserver.py [unix-socket path]
+#
+# This script just replies with the received content. Note
+# that the socket path includes the port.
+#
+# e.g., ./echoserver.py /tmp/vm3.vsock_1234
+#
 import socket
 import threading
 import time
+import sys
 
-s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
-s.bind((socket.VMADDR_CID_ANY, 1234))
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.bind(sys.argv[1])
 s.listen();
 
 try:
