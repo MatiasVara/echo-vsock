@@ -1,4 +1,4 @@
-# Usage: python3.7 ./echoclient-host.py [unix-sock path] [port] [samples] [name]
+# Usage: python3.7 ./echoclient-host.py [unix-sock path] [port] [samples] [name] [cpu]
 # Run this in the host to measure latency when communicating to guest.
 #
 import socket
@@ -6,9 +6,20 @@ import threading
 import datetime
 import sys
 import statistics
+from subprocess import call
+import os
 
 max_latency = 0
 values = []
+
+devnull = open(os.devnull, 'w')
+
+pid = os.getpid()
+
+try:
+    call(['taskset', '-pc', str(sys.argv[5]), str(pid)], stdout=devnull)
+except OSError:
+    print(f"Error when pinning! {str(sys.argv[5])} {str(pid)}") #.format(vcpuid, cpuid)
 
 for i in range(int(sys.argv[3])):
     s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)

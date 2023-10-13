@@ -1,19 +1,30 @@
-# Usage: python3.7 ./echoclient.py [cid] [port] [samples] [name]
+# Usage: python3.7 ./echoclient.py [cid] [port] [samples] [name] [cpu]
 #
 # Latency is calculated as the time elapsed between the sending and the reception
 # SOCKSTREAM is not good for latency but SOCKDGRAM is not supported yet
 #
 # CID '2' is always the host
-# e.g., ./echoclient.py 2 1234 10000 guesttohost
+# e.g., ./echoclient.py 2 1234 10000 guesttohost 0
 #
 import socket
 import threading
 import datetime
 import sys
 import statistics
+import os
+from subprocess import call
 
 max_latency = 0
 values = []
+
+devnull = open(os.devnull, 'w')
+
+pid = os.getpid()
+
+try:
+    call(['taskset', '-pc', str(sys.argv[5]), str(pid)], stdout=devnull)
+except OSError:
+    print(f"Error when pinning! {str(sys.argv[5])} {str(pid)}")
 
 for i in range(int(sys.argv[3])):
     s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)

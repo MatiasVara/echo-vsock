@@ -1,4 +1,4 @@
-# Usage: python3.7 ./echoserver.py [unix-socket path]
+# Usage: python3.7 ./echoserver.py [unix-socket path] [cpu]
 #
 # This script just replies with the received content. Note
 # that the socket path includes the port.
@@ -10,6 +10,16 @@ import threading
 import time
 import sys
 import os
+from subprocess import call
+
+devnull = open(os.devnull, 'w')
+
+pid = os.getpid()
+
+try:
+    call(['taskset', '-pc', str(sys.argv[2]), str(pid)], stdout=devnull)
+except OSError:
+    print(f"Error when pinning! {str(sys.argv[5])} {str(pid)}") #.format(vcpuid, cpuid)
 
 s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
